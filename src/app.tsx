@@ -3,6 +3,19 @@ import { useDropzone } from 'react-dropzone';
 import { parseCsv } from './csv-utils';  // CSVをパースするモジュール
 import { createMindmap } from './mindmap';  // マインドマップを作成するモジュール
 
+React.useEffect(() => {
+  if (window.miro) {
+    console.log('Miro SDKがロードされています');
+    miro.onReady().then(() => {
+      console.log('Miro SDKが準備完了しました');
+    }).catch((error) => {
+      console.error('Miro SDKのエラー:', error);
+    });
+  } else {
+    console.error('Miro SDKが利用できません');
+  }
+}, []);
+
 // ドロップゾーンのスタイル定義
 const dropzoneStyles = {
   display: "flex",
