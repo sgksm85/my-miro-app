@@ -23,7 +23,12 @@ const getAccessToken = async (code: string) => {
     body: body.toString(),
   });
 
+  if (!response.ok) {
+    throw new Error('Failed to get access token');
+  }
+
   const data = await response.json();
+  console.log('Access Token:', data.access_token); // デバッグ用にアクセストークンを出力
   return data.access_token;
 };
 
@@ -34,11 +39,12 @@ const CallbackPage: React.FC = () => {
 
     if (code) {
       getAccessToken(code).then((token) => {
-        console.log('Access Token:', token);
-        localStorage.setItem('miro_access_token', token);
-        window.location.href = '/'; // アプリのメインページへリダイレクト
+        console.log('Saving access token to localStorage');
+        localStorage.setItem('miro_access_token', token); // トークンを保存
+        window.location.href = '/'; // メインページにリダイレクト
       }).catch((error) => {
         console.error('Failed to get access token:', error);
+        // 必要に応じてエラーページへのリダイレクトを追加
       });
     }
   }, []);
