@@ -6,5 +6,8 @@ export default defineConfig({
   base: '/',
   server: {
     port: 3000
+  },
+  build: {
+    target: 'esnext' // 最新のES仕様をターゲットにする
   }
 })
