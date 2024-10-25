@@ -1,6 +1,7 @@
-import * as React from "react";
-import { useEffect } from "react";
-import { useRouter } from 'next/router'; // Next.jsのルーティング
+// src/callback.tsx
+import * as React from 'react';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const CLIENT_ID = '3458764604502701348';
 const CLIENT_SECRET = 'm9A6ivHE2yEv2L1I4dulYu0q02QCHXly';
@@ -16,35 +17,39 @@ const getAccessToken = async (code: string) => {
     body: new URLSearchParams({
       grant_type: 'authorization_code',
       code: code,
-      redirect_uri: REDIRECT_URI, 
-      client_id: CLIENT_ID,  
-      client_secret: CLIENT_SECRET  
-    })
+      redirect_uri: REDIRECT_URI,
+      client_id: CLIENT_ID,
+      client_secret: CLIENT_SECRET,
+    }),
   });
 
   const data = await response.json();
   if (!data.access_token) {
     throw new Error('Failed to get access token');
   }
-
-  localStorage.setItem('miro_access_token', data.access_token);
   return data.access_token;
 };
 
 const CallbackPage: React.FC = () => {
-  const router = useRouter();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const code = router.query.code as string; // URLから認証コードを取得
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
 
     if (code) {
-      getAccessToken(code).then(() => {
-        window.location.href = '/'; // 認証後にメインページへリダイレクト
-      }).catch((error) => {
-        console.error('Failed to get access token:', error);
-      });
+      getAccessToken(code)
+        .then((token) => {
+          console.log('Access Token:', token);
+          localStorage.setItem('miro_access_token', token); // トークンを保存
+          navigate('/'); // 認証後にメインページにリダイレクト
+        })
+        .catch((error) => {
+          console.error('Failed to get access token:', error);
+          alert('Failed to authenticate with Miro');
+        });
     }
-  }, [router.query.code]);
+  }, [navigate]);
 
   return <div>Processing login...</div>;
 };
