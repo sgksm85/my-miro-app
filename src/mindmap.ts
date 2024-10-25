@@ -1,15 +1,9 @@
 import { DSVRowArray } from "d3-dsv";
 
-/**
- * Create graph from CSV rows
- *
- * @param contents CSV rows
- * @returns Schema that can be directly passed to createMindmapNode
- */
 const createGraph = (contents: DSVRowArray<string>) => {
-  let root: Node | undefined;
+  let root: any;
 
-  const visited: Record<string, Node> = {};
+  const visited: Record<string, any> = {};
 
   for (const row of contents) {
     let parent = undefined;
@@ -43,5 +37,7 @@ const createGraph = (contents: DSVRowArray<string>) => {
  */
 export const createMindmap = async (contents: DSVRowArray<string>) => {
   const root = createGraph(contents);
+  
+  // 実験的APIを使用してマインドマップを作成
   await miro.board.experimental.createMindmapNode(root);
 };

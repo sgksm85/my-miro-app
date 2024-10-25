@@ -3,20 +3,6 @@ import { useDropzone } from 'react-dropzone';
 import { parseCsv } from './csv-utils';
 import { createMindmap } from './mindmap'; // モジュールのパスが正しいか確認
 
-const CLIENT_ID = '3458764604502701348';
-const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback';
-
-// 認証URLを生成する関数
-const generateAuthUrl = () => {
-  const baseAuthUrl = 'https://miro.com/oauth/authorize';
-  const params = new URLSearchParams({
-    response_type: 'code',
-    client_id: CLIENT_ID,
-    redirect_uri: REDIRECT_URI,
-  });
-  return `${baseAuthUrl}?${params.toString()}`;
-};
-
 // Miro SDK v2 の初期化処理
 miro.board.getInfo().then(boardInfo => {
   console.log('Miro SDK is ready', boardInfo);
