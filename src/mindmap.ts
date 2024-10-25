@@ -1,4 +1,5 @@
 import { DSVRowArray } from "d3-dsv";
+import { useEffect } from 'react';
 
 /**
  * Create graph from CSV rows
@@ -7,7 +8,7 @@ import { DSVRowArray } from "d3-dsv";
  * @returns Tree structure that can be passed to createMindmapNode
  */
 const createGraph = (contents: DSVRowArray<string>) => {
-  let root: any;  // ルートノードを格納するための変数
+  let root: any;
   const visited: Record<string, any> = {};
 
   for (const row of contents) {
@@ -33,7 +34,7 @@ const createGraph = (contents: DSVRowArray<string>) => {
     }
   }
 
-  console.log('Generated tree:', root);  // ここで確認
+  console.log('Generated tree:', root);
   return root;
 };
 
@@ -43,14 +44,32 @@ const createGraph = (contents: DSVRowArray<string>) => {
  * @param contents CSV rows
  */
 export const createMindmap = async (contents: DSVRowArray<string>) => {
-  const root = createGraph(contents);  // ツリー構造を生成
-  console.log('Created tree structure:', root);  // 構造が正しく作成されているか確認
+  const root = createGraph(contents);
+  console.log('Created tree structure:', root);
 
   try {
-    // Miroボードにマインドマップを作成
     await miro.board.experimental.createMindmapNode(root);
     console.log('Mindmap successfully created');
   } catch (error) {
-    console.error('Error creating mindmap:', error);  // エラーハンドリング
+    console.error('Error creating mindmap:', error);
   }
+};
+
+// Miro SDKの初期化（useEffect内で処理）
+export const useInitializeMiro = () => {
+  useEffect(() => {
+    const initMiro = async () => {
+      try {
+        await miro.onReady();
+        const authorized = await miro.isAuthorized();
+        if (!authorized) {
+          await miro.requestAuthorization();
+        }
+      } catch (error) {
+        console.error('Miro SDK initialization failed:', error);
+      }
+    };
+
+    initMiro();
+  }, []);
 };

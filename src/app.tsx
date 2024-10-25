@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useDropzone } from 'react-dropzone';
 import { parseCsv } from './csv-utils';  // CSVをパースするモジュール
-import { createMindmap } from './mindmap';  // マインドマップを作成するモジュール
+import { createMindmap, useInitializeMiro } from './mindmap';  // マインドマップを作成するモジュール
 
 // ドロップゾーンのスタイル定義
 const dropzoneStyles = {
@@ -18,6 +18,8 @@ const dropzoneStyles = {
 
 const MainApp: React.FC = () => {
   const [files, setFiles] = React.useState<File[]>([]);
+  useInitializeMiro();  // Miroの初期化を実行
+
   const dropzone = useDropzone({
     accept: {
       "text/csv": [".csv"],
@@ -32,7 +34,7 @@ const MainApp: React.FC = () => {
   const handleCreate = async () => {
     try {
       const contents = await parseCsv(files[0]);  // CSVファイルの内容をパース
-      console.log('Parsed CSV contents:', contents);  // ここで内容を確認
+      console.log('Parsed CSV contents:', contents);
       await createMindmap(contents);  // パースした内容を元にマインドマップを作成
       console.log('Mind map created successfully');
     } catch (error) {
