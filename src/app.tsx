@@ -5,8 +5,9 @@ import { createMindmap } from './mindmap';  // マインドマップを作成す
 
 miro.onReady().then(() => {
   console.log('Miro SDK is ready');
+  // SDKを使った処理をここに書く
 }).catch((error) => {
-  console.error('Miro SDK error:', error);
+  console.error('Error initializing Miro SDK:', error);
 });
 
 // ドロップゾーンのスタイル定義
