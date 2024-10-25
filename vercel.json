@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/callback",
-      "destination": "/callback.html"
+      "destination": "/api/callback"
     }
   ]
 }
