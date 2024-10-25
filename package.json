@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "d3-dsv": "^3.0.1",
+    "markdown-it": "^14.1.0",
     "mirotone": "5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

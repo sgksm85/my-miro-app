@@ -2,11 +2,12 @@ import * as React from "react";
 import { createRoot } from "react-dom/client";
 import { useDropzone } from "react-dropzone";
 import { parseCsv } from "./csv-utils";  // CSV解析用のユーティリティ
+import MarkdownIt from "markdown-it";
 import { createMindmap } from "./mindmap";  // マインドマップ生成用の関数
 
 // MiroのクライアントIDとリダイレクトURI
 const CLIENT_ID = '3458764604502701348';  // ここにクライアントIDを設定
-const REDIRECT_URI = 'http://localhost:3000/callback';  // リダイレクトURI
+const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback';  // リダイレクトURI
 
 // 認証URLを生成する関数
 const generateAuthUrl = () => {
@@ -19,6 +20,36 @@ const generateAuthUrl = () => {
   });
 
   return `${baseAuthUrl}?${params.toString()}`;
+};
+
+// ファイルの種類を判別して、それに応じたパース処理を行う
+const handleFileParse = async (file: File) => {
+  const fileType = file.name.split('.').pop()?.toLowerCase();
+  
+  // CSVの場合
+  if (fileType === "csv") {
+    const csvContents = await file.text();
+    const parsedCsv = await parseCsv(csvContents);
+    return parsedCsv;  // CSVデータを返す
+  }
+
+  // Markdownの場合
+  if (fileType === "md") {
+    const md = new MarkdownIt();
+    const markdownContents = await file.text();
+    const parsedMarkdown = md.parse(markdownContents, {});
+    return convertMarkdownToMindmap(parsedMarkdown);  // Markdownデータを返す
+  }
+
+  throw new Error("Unsupported file type");
+};
+
+// Markdownをマインドマップ形式に変換する（仮の例）
+const convertMarkdownToMindmap = (parsedMarkdown: any) => {
+  // Markdownの解析結果を元に、マインドマップのツリー構造を作成
+  const root = { content: 'Mindmap', children: [] };
+  // 適切なマインドマップの構造に変換するロジックをここに記述
+  return root;
 };
 
 const dropzoneStyles = {
@@ -38,6 +69,7 @@ const App: React.FC = () => {
   const dropzone = useDropzone({
     accept: {
       "text/csv": [".csv"],
+      "text/markdown": [".md"],
     },
     maxFiles: 1,
     onDrop: (droppedFiles) => {
@@ -49,8 +81,8 @@ const App: React.FC = () => {
     const failed = [];
     for (const file of files) {
       try {
-        const contents = await parseCsv(file);  // CSV解析
-        await createMindmap(contents);  // マインドマップ生成
+        const parsedData = await handleFileParse(file);  // ファイルに応じてパース
+        await createMindmap(parsedData);  // パースしたデータからマインドマップ生成
       } catch (e) {
         failed.push(file);
         console.error(e);
@@ -82,15 +114,15 @@ const App: React.FC = () => {
 
   return (
     <div>
-      <h1>Miro CSV to Mindmap</h1>
+      <h1>Miro CSV/Markdown to Mindmap</h1>
       <button onClick={handleLogin}>Login with Miro</button>
 
       <div className="dnd-container">
-        <p>Select your CSV file to import it as a mind map</p>
+        <p>Select your CSV or Markdown file to import it as a mind map</p>
         <div {...dropzone.getRootProps({ style })}>
           <input {...dropzone.getInputProps()} />
           {dropzone.isDragAccept ? (
-            <p className="dnd-text">Drop your CSV file here</p>
+            <p className="dnd-text">Drop your file here</p>
           ) : (
             <>
               <div>
@@ -98,9 +130,9 @@ const App: React.FC = () => {
                   type="button"
                   className="button button-primary button-small"
                 >
-                  Select CSV file
+                  Select CSV or Markdown file
                 </button>
-                <p className="dnd-text">Or drop your CSV file here</p>
+                <p className="dnd-text">Or drop your file here</p>
               </div>
             </>
           )}
