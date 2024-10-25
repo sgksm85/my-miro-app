@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { parseCsv } from './csv-utils';
 import { createMindmapFromCSV } from './mindmap';
@@ -8,6 +7,9 @@ import CallbackPage from './pages/callback';
 
 // Miroの型定義
 declare const miro: any;
+
+const CLIENT_ID = '3458764604502701348';
+const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback';
 
 // Miro SDKの初期化
 miro.onReady(() => {
@@ -21,14 +23,11 @@ miro.onReady(() => {
     
     // 認証済みの場合はパネルを開く
     await miro.board.ui.openPanel({
-      url: '/',  // 変更: index.htmlではなくルートパスを使用
+      url: '/',
       height: 400
     });
   });
 });
-
-const CLIENT_ID = '3458764604502701348';
-const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback';
 
 const generateAuthUrl = () => {
   const baseAuthUrl = 'https://miro.com/oauth/authorize';
@@ -109,15 +108,11 @@ const MainApp: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MainApp />} />
-        <Route path="/callback" element={<CallbackPage />} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/" element={<MainApp />} />
+      <Route path="/callback" element={<CallbackPage />} />
+    </Routes>
   );
 };
 
-const container = document.getElementById('root');
-const root = createRoot(container!);
-root.render(<App />);
+export default App;
