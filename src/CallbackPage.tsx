@@ -36,9 +36,14 @@ const CallbackPage: React.FC = () => {
     if (code) {
       getAccessToken(code).then((token) => {
         console.log('Access Token:', token);
-        // アクセストークンを保存して後で使用する
         localStorage.setItem('miro_access_token', token);
-        // 必要に応じてボードにリダイレクトするなどの処理を追加
+        
+        // Miro SDKの初期化とトークンの設定
+        miro.onReady(() => {
+          miro.setToken(token);
+          // ここでボードページにリダイレクトする
+          window.location.href = '/'; // アプリのメインページへリダイレクト
+        });
       }).catch((error) => {
         console.error('Failed to get access token:', error);
       });

@@ -32,10 +32,11 @@ const App: React.FC = () => {
       await miro.board.ui.openPanel({url: 'app.html'});
     });
 
-    // アクセストークンの確認
+    // アクセストークンの確認と設定
     const token = localStorage.getItem('miro_access_token');
     if (token) {
       setIsLoggedIn(true);
+      miro.setToken(token);
     }
   }, []);
 
