@@ -1,83 +1,47 @@
-import { DSVRowArray } from 'd3-dsv';
+// CSVデータからマインドマップを作成する関数
+export const createMindmap = async (contents: string[][]) => {
+  // ビューポートの中心を取得
+  const viewport = await miro.board.viewport.get();
+  const center = {
+    x: viewport.x + viewport.width / 2,
+    y: viewport.y + viewport.height / 2,
+  };
 
-// Miroボードにノードを追加する関数
-const createMindmapNode = async (nodeData: any, x: number, y: number): Promise<any> => {
-  try {
-    console.log('Creating node for:', nodeData);
-    const [node] = await miro.board.widgets.create({
-      type: 'shape',
-      text: nodeData.content || 'No content',
-      x: x,
-      y: y,
-      style: {
-        shapeType: 3, // 四角形
-      },
-    });
+  // ルートノードを作成
+  const [rootNode] = await miro.board.widgets.create({
+    type: 'card',
+    text: contents[0][0], // 最初の行の最初の列をルートとして使用
+    x: center.x,
+    y: center.y,
+  });
 
-    // 子ノードがある場合は再帰的に追加
-    if (nodeData.children && nodeData.children.length > 0) {
-      let childX = x + 200; // 子ノードの位置調整
-      let childY = y - ((nodeData.children.length - 1) * 100) / 2;
+  // 各行を処理
+  for (let i = 1; i < contents.length; i++) {
+    const row = contents[i];
+    let parentNode = rootNode;
+    let x = center.x;
+    let y = center.y + (i * 100); // 各行を下に配置
 
-      for (const child of nodeData.children) {
-        const childNode = await createMindmapNode(child, childX, childY);
-        if (childNode) {
-          // ノード間を接続する線を作成
-          await miro.board.widgets.create({
-            type: 'connector',
-            startWidgetId: node.id,
-            endWidgetId: childNode.id,
-          });
-        }
-        childY += 100; // 各子ノードのY位置を調整
+    // 行の各列を処理
+    for (let j = 0; j < row.length; j++) {
+      if (row[j]) {
+        // 子ノードを作成
+        const [childNode] = await miro.board.widgets.create({
+          type: 'card',
+          text: row[j],
+          x: x + (j * 200), // 各列を右に配置
+          y: y,
+        });
+
+        // 親ノードと子ノードを接続
+        await miro.board.widgets.create({
+          type: 'connector',
+          startWidgetId: parentNode.id,
+          endWidgetId: childNode.id,
+        });
+
+        parentNode = childNode;
       }
     }
-
-    return node;
-  } catch (error) {
-    console.error('Error creating node:', error);
   }
-};
-
-// CSVからマインドマップを作成する関数
-export const createMindmapFromCSV = async (parsedCsv: DSVRowArray<string>) => {
-  const root = createGraphFromCSV(parsedCsv);
-  if (root) {
-    await createMindmapNode(root, 0, 0);
-  } else {
-    console.error('Failed to create graph from CSV data');
-  }
-};
-
-// CSVデータからグラフ構造を作成する関数
-const createGraphFromCSV = (contents: DSVRowArray<string>) => {
-  let root: any;
-  const visited: Record<string, any> = {};
-
-  for (const row of contents) {
-    let parent = undefined;
-    for (const col of contents.columns) {
-      const value = row[col]!;
-      const key = `${col}-${value}`;
-
-      if (!visited[key]) {
-        const node = { content: value, children: [] };
-        visited[key] = node;
-
-        if (parent) {
-          parent.children.push(visited[key]);
-        } else {
-          if (!root) {
-            root = node;
-          } else {
-            root.children.push(node);
-          }
-        }
-      }
-
-      parent = visited[key];
-    }
-  }
-
-  return root;
 };
