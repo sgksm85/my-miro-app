@@ -17,9 +17,6 @@ const generateAuthUrl = () => {
   return `${baseAuthUrl}?${params.toString()}`;
 };
 
-const authorized = await miro.isAuthorized();
-console.log('Authorized:', authorized);  // 認証状態を確認
-
 miro.onReady(() => {
   console.log('Miro SDK is ready');
   
