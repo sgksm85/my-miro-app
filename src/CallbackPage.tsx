@@ -7,35 +7,26 @@ const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback';
 
 // アクセストークンを取得する関数
 const getAccessToken = async (code: string) => {
-  const tokenUrl = 'https://api.miro.com/v1/oauth/token';
-  const body = new URLSearchParams({
-    grant_type: 'authorization_code',
-    code: code,
-    redirect_uri: REDIRECT_URI,
-    client_id: CLIENT_ID,
-    client_secret: CLIENT_SECRET,
+  const response = await fetch('https://api.miro.com/v1/oauth/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({
+      grant_type: 'authorization_code',
+      code: code,
+      redirect_uri: 'https://my-miro-app.vercel.app/callback', // ここを確認
+      client_id: 'YOUR_CLIENT_ID',  // クライアントID
+      client_secret: 'YOUR_CLIENT_SECRET' // クライアントシークレット
+    })
   });
 
-  try {
-    const response = await fetch(tokenUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: body.toString(),
-    });
-
-    const data = await response.json();
-    if (data.access_token) {
-      return data.access_token;
-    } else {
-      console.error('Failed to get access token:', data);
-      throw new Error('Failed to get access token');
-    }
-  } catch (error) {
-    console.error('Error during access token retrieval:', error);
-    throw error;
+  const data = await response.json();
+  if (!data.access_token) {
+    throw new Error('Failed to get access token');
   }
+
+  localStorage.setItem('miro_access_token', data.access_token);
 };
 
 const CallbackPage: React.FC = () => {
