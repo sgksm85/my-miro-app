@@ -46,6 +46,7 @@ const App: React.FC = () => {
 
   // ドロップゾーンの設定
   const onDrop = React.useCallback((acceptedFiles: File[]) => {
+    console.log("Dropped files: ", acceptedFiles);  // ドロップされたファイルを確認
     setFiles(acceptedFiles);
   }, []);
 
@@ -58,23 +59,37 @@ const App: React.FC = () => {
   });
 
   // CSVファイルを解析してマインドマップを作成
-  const handleCreateMindmap = async () => {
-    if (files.length === 0) {
-      alert('Please select a CSV file first.');
-      return;
-    }
+// CSVファイルを解析してマインドマップを作成
+const handleCreateMindmap = async () => {
+  if (files.length === 0) {
+    alert('Please select a CSV file first.');
+    return;
+  }
 
-    const file = files[0];
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const content = e.target?.result as string;
+  const file = files[0];
+  console.log("Reading file: ", file.name);  // ファイル名の確認
+  const reader = new FileReader();
+
+  reader.onload = async (e) => {
+    const content = e.target?.result as string;
+    if (content) {
       const parsedCsv = parseCsv(content);
       await createMindmapFromCSV(parsedCsv);
       alert('Mindmap creation complete!');
       setFiles([]);
-    };
-    reader.readAsText(file);
+    } else {
+      console.error("Failed to read file content");
+      alert('Failed to read file content.');
+    }
   };
+
+  reader.onerror = () => {
+    console.error("Error reading file");
+    alert('Error reading file.');
+  };
+
+  reader.readAsText(file);
+};
 
   return (
     <div style={{ padding: '20px' }}>
