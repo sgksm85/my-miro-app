@@ -68,8 +68,9 @@ const App: React.FC = () => {
   const [files, setFiles] = React.useState<File[]>([]);
   const dropzone = useDropzone({
     accept: {
-      "text/csv": [".csv"],
-      "text/markdown": [".md"],
+      'text/csv': ['.csv'],  // CSVの拡張子
+      'text/markdown': ['.md'],  // Markdownの拡張子
+      'text/plain': ['.txt'],  // テキストファイル形式もカバー
     },
     maxFiles: 1,
     onDrop: (droppedFiles) => {
