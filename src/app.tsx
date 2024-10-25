@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useDropzone } from 'react-dropzone';
 import { parseCsv } from './csv-utils';
-import { createMindmap } from './mindmap';
+import { createMindmap } from './mindmap'; // モジュールのパスが正しいか確認
 
 const CLIENT_ID = '3458764604502701348';
 const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback';
@@ -18,21 +18,28 @@ const generateAuthUrl = () => {
 };
 
 miro.onReady(async () => {
-  const authorized = await miro.isAuthorized();
-  if (!authorized) {
-    const authUrl = generateAuthUrl();
-    window.location.href = authUrl;
-    return;
-  }
+  try {
+    miro.board.ui.add('icon', {
+      title: 'CSV to Mindmap',
+      svgIcon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="blue"/></svg>',
+      onClick: async () => {
+        const authorized = await miro.isAuthorized();
+        console.log('Authorized:', authorized);
+        if (!authorized) {
+          const authUrl = generateAuthUrl();
+          window.location.href = authUrl;
+          return;
+        }
 
-  // 認証が成功した場合の処理
-  miro.board.ui.add('icon', {
-    title: 'CSV to Mindmap',
-    svgIcon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="blue"/></svg>',
-    onClick: async () => {
-      await miro.board.ui.openPanel({ url: '/', height: 400 });
-    }
-  });
+        await miro.board.ui.openPanel({
+          url: '/',
+          height: 400
+        });
+      }
+    });
+  } catch (error) {
+    console.error('Error during Miro initialization:', error);
+  }
 });
 
 // ドロップゾーンのスタイル定義
