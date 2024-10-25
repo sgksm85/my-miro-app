@@ -1,7 +1,43 @@
 import * as React from 'react';
 import { useDropzone } from 'react-dropzone';
 import { parseCsv } from './csv-utils';
-import { createMindmap } from './mindmap';
+import { createMindmapFromCSV } from './mindmap';
+
+const CLIENT_ID = '3458764604502701348';
+const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback';
+
+// 認証URLを生成する関数
+const generateAuthUrl = () => {
+  const baseAuthUrl = 'https://miro.com/oauth/authorize';
+  const params = new URLSearchParams({
+    response_type: 'code',
+    client_id: CLIENT_ID,
+    redirect_uri: REDIRECT_URI,
+  });
+  return `${baseAuthUrl}?${params.toString()}`;
+};
+
+// Miroの初期化
+miro.onReady(() => {
+  console.log('Miro SDK is ready');
+  
+  // ツールバーの設定
+  miro.board.ui.on('icon:click', async () => {
+    const authorized = await miro.isAuthorized();
+    if (!authorized) {
+      // 未認証の場合は認証フローを開始
+      const authUrl = generateAuthUrl();
+      window.location.href = authUrl;
+      return;
+    }
+
+    // パネルを開く
+    await miro.board.ui.openPanel({
+      url: '/',
+      height: 400
+    });
+  });
+});
 
 // ドロップゾーンのスタイル定義
 const dropzoneStyles = {
