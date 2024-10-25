@@ -48,7 +48,7 @@ export const createMindmap = async (contents: DSVRowArray<string>) => {
   console.log('Created tree structure:', root);
 
   try {
-    await miro.board.experimental.createMindmapNode(root);
+    await window.miro.board.experimental.createMindmapNode(root);
     console.log('Mindmap successfully created');
   } catch (error) {
     console.error('Error creating mindmap:', error);
@@ -58,15 +58,27 @@ export const createMindmap = async (contents: DSVRowArray<string>) => {
 // Miro SDKの初期化（useEffect内で処理）
 export const useInitializeMiro = () => {
   useEffect(() => {
-    const initMiro = async () => {
-      try {
-        await miro.onReady();
-        const authorized = await miro.isAuthorized();
-        if (!authorized) {
-          await miro.requestAuthorization();
-        }
-      } catch (error) {
-        console.error('Miro SDK initialization failed:', error);
+    const initMiro = () => {
+      if (window.miro) {
+        window.miro.on('EVENT_NAME', () => {
+          // 必要な処理をここに記述
+          console.log('Miro SDK event received');
+        });
+
+        // 例として、board:initイベントをリスン
+        window.miro.on('init', async () => {
+          try {
+            const authorized = await window.miro.isAuthorized();
+            if (!authorized) {
+              await window.miro.requestAuthorization();
+            }
+            console.log('Miro SDKが初期化されました');
+          } catch (error) {
+            console.error('Miro SDK initialization failed:', error);
+          }
+        });
+      } else {
+        console.error('Miro SDKが利用できません');
       }
     };
 
