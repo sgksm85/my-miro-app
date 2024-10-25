@@ -3,7 +3,7 @@ import { useEffect } from "react";
 
 const CLIENT_ID = '3458764604502701348';  // ここにクライアントIDを設定
 const CLIENT_SECRET = 'm9A6ivHE2yEv2L1I4dulYu0q02QCHXly';  // クライアントシークレット
-const REDIRECT_URI = 'http://localhost:3000/callback';  // リダイレクトURI
+const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback';  // リダイレクトURI
 
 // アクセストークンを取得する関数
 const getAccessToken = async (code: string) => {
