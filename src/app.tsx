@@ -1,17 +1,12 @@
 import * as React from 'react';
 import { useDropzone } from 'react-dropzone';
-import { parseCsv } from './csv-utils';  // CSVをパースするモジュール
-import { createMindmap } from './mindmap';  // マインドマップを作成するモジュール
-
-miro.onReady(async () => {
-  // SDKの初期化
-  await miro.initialize();
-  console.log('Miro SDK initialized');
-});
+import { parseCsv } from './csv-utils';
+import { createMindmap } from './mindmap';
 
 const MainApp: React.FC = () => {
   const [files, setFiles] = React.useState<File[]>([]);
 
+  // ドロップゾーンの設定
   const dropzone = useDropzone({
     accept: {
       "text/csv": [".csv"],
@@ -22,7 +17,21 @@ const MainApp: React.FC = () => {
     },
   });
 
-  // CSVをパースしてマインドマップを作成する処理
+  // Miro SDKの準備
+  React.useEffect(() => {
+    const initializeMiro = async () => {
+      try {
+        await miro.onReady();
+        console.log('Miro SDK is ready');
+      } catch (error) {
+        console.error('Error initializing Miro SDK:', error);
+      }
+    };
+
+    initializeMiro();
+  }, []);
+
+  // マインドマップ作成処理
   const handleCreate = async () => {
     if (files.length === 0) {
       console.error('No file selected');
@@ -30,9 +39,9 @@ const MainApp: React.FC = () => {
     }
 
     try {
-      const contents = await parseCsv(files[0]);  // CSVファイルの内容をパース
-      console.log('Parsed CSV contents:', contents);  // ここで内容を確認
-      await createMindmap(contents);  // パースした内容を元にマインドマップを作成
+      const contents = await parseCsv(files[0]);
+      console.log('Parsed CSV contents:', contents);
+      await createMindmap(contents);
       console.log('Mind map created successfully');
     } catch (error) {
       console.error('Error creating mind map:', error);
