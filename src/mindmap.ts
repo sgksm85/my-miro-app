@@ -58,15 +58,10 @@ export const createMindmap = async (contents: DSVRowArray<string>) => {
 // Miro SDKの初期化（useEffect内で処理）
 export const useInitializeMiro = () => {
   useEffect(() => {
-    const initMiro = () => {
+    const initMiro = async () => {
       if (window.miro) {
-        window.miro.on('EVENT_NAME', () => {
-          // 必要な処理をここに記述
-          console.log('Miro SDK event received');
-        });
-
-        // 例として、board:initイベントをリスン
-        window.miro.on('init', async () => {
+        // イベントリスナーを設定
+        window.miro.on('READY', async () => {
           try {
             const authorized = await window.miro.isAuthorized();
             if (!authorized) {
@@ -77,6 +72,9 @@ export const useInitializeMiro = () => {
             console.error('Miro SDK initialization failed:', error);
           }
         });
+
+        // SDKの準備が整ったことを通知
+        window.miro.board.requestToken();
       } else {
         console.error('Miro SDKが利用できません');
       }
