@@ -4,13 +4,15 @@ import { useDropzone } from 'react-dropzone';
 import { parseCsv } from './csv-utils';
 import { createMindmapFromCSV } from './mindmap';
 
-// Miro SDKが正しくロードされているか確認
-miro.onReady(() => {
-  console.log("Miro SDK is ready.");
-});
-
 const App: React.FC = () => {
   const [files, setFiles] = React.useState<File[]>([]);
+
+  // Miro SDKが正しくロードされているか確認
+  React.useEffect(() => {
+    miro.onReady(() => {
+      console.log("Miro SDK is ready.");
+    });
+  }, []);  // 空の依存配列で一度だけ実行
 
   // ドロップゾーンの設定
   const onDrop = React.useCallback((acceptedFiles: File[]) => {
