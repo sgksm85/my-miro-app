@@ -7,14 +7,15 @@
     "boards:read",
     "boards:write"
   ],
-  "scopes": [
-    "boards:read",
-    "boards:write"
-  ],
-  "icon": {
-    "url": "https://my-miro-app.vercel.app/icon.svg",
-    "width": 24,
-    "height": 24
+  "extensionPoints": {
+    "toolbar": {
+      "title": "CSV to Mindmap",
+      "toolbarIcon": {
+        "light": "https://my-miro-app.vercel.app/icon.svg",
+        "dark": "https://my-miro-app.vercel.app/icon.svg"
+      },
+      "librarySvgIcon": "https://my-miro-app.vercel.app/icon.svg"
+    }
   },
   "url": "https://my-miro-app.vercel.app",
   "redirectUris": [
