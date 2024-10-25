@@ -4,14 +4,11 @@ import { DSVRowArray } from 'd3-dsv';
 const createMindmapNode = async (nodeData: any, x: number, y: number): Promise<any> => {
   try {
     console.log('Creating node for:', nodeData);
-    const [node] = await miro.board.widgets.create({
-      type: 'shape',
-      text: nodeData.content || 'No content',
+    const [node] = await miro.board.createShape({
+      content: nodeData.content || 'No content',
       x: x,
       y: y,
-      style: {
-        shapeType: 3, // 四角形
-      },
+      shape: 'rectangle',
     });
 
     // 子ノードがある場合は再帰的に追加
@@ -23,10 +20,13 @@ const createMindmapNode = async (nodeData: any, x: number, y: number): Promise<a
         const childNode = await createMindmapNode(child, childX, childY);
         if (childNode) {
           // ノード間を接続する線を作成
-          await miro.board.widgets.create({
-            type: 'connector',
-            startWidgetId: node.id,
-            endWidgetId: childNode.id,
+          await miro.board.createConnector({
+            start: {
+              item: node.id,
+            },
+            end: {
+              item: childNode.id,
+            },
           });
         }
         childY += 100; // 各子ノードのY位置を調整
@@ -36,6 +36,7 @@ const createMindmapNode = async (nodeData: any, x: number, y: number): Promise<a
     return node;
   } catch (error) {
     console.error('Error creating node:', error);
+    throw error;
   }
 };
 

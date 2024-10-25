@@ -24,6 +24,20 @@ const generateAuthUrl = () => {
 
 const App: React.FC = () => {
   const [files, setFiles] = React.useState<File[]>([]);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+
+  React.useEffect(() => {
+    // Miro SDKの初期化
+    miro.board.ui.on('icon:click', async () => {
+      await miro.board.ui.openPanel({url: 'app.html'});
+    });
+
+    // アクセストークンの確認
+    const token = localStorage.getItem('miro_access_token');
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
 
   // ドロップゾーンの設定
   const onDrop = React.useCallback((acceptedFiles: File[]) => {
@@ -71,13 +85,24 @@ const App: React.FC = () => {
       return;
     }
 
+    if (!isLoggedIn) {
+      alert('Please login to Miro first.');
+      return;
+    }
+
     try {
+      await miro.board.ui.openModal({
+        url: 'modal.html',
+        width: 400,
+        height: 200,
+      });
+
       await handleFileParseAndCreateMindmap(files[0]);
       alert('Mindmap creation complete!');
       setFiles([]);
     } catch (error) {
       console.error('Error creating mindmap:', error);
-      alert('Failed to create mindmap.');
+      alert('Failed to create mindmap. Error: ' + (error as Error).message);
     }
   };
 
@@ -91,10 +116,13 @@ const App: React.FC = () => {
     <div style={{ padding: '20px' }}>
       <h1>Miro CSV/Markdown to Mindmap</h1>
 
-      {/* ログインボタン */}
-      <button onClick={handleLogin} style={{ marginBottom: '20px' }}>
-        Login with Miro
-      </button>
+      {!isLoggedIn ? (
+        <button onClick={handleLogin} style={{ marginBottom: '20px' }}>
+          Login with Miro
+        </button>
+      ) : (
+        <p>Logged in to Miro</p>
+      )}
 
       {/* ドロップゾーン */}
       <div
