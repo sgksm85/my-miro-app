@@ -19,18 +19,24 @@ const generateAuthUrl = () => {
 
 miro.onReady(async () => {
   try {
+    // ツールバーにアイコンを追加
     miro.board.ui.add('icon', {
       title: 'CSV to Mindmap',
       svgIcon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="blue"/></svg>',
       onClick: async () => {
+        // 認証状態を確認
         const authorized = await miro.isAuthorized();
-        console.log('Authorized:', authorized);
+        console.log('認証状態:', authorized);  // 認証されているか確認（デバッグ用）
+
+        // 認証されていない場合、認証フローにリダイレクト
         if (!authorized) {
-          const authUrl = generateAuthUrl();
+          const authUrl = generateAuthUrl();  // 認証URLを生成
+          console.log('Redirecting to auth URL:', authUrl);  // 認証URLをデバッグ出力
           window.location.href = authUrl;
           return;
         }
 
+        // 認証が成功した場合、パネルを開く
         await miro.board.ui.openPanel({
           url: '/',
           height: 400
