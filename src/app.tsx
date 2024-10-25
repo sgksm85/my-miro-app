@@ -15,13 +15,13 @@ const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback';
 miro.onReady(() => {
   console.log('Miro SDK is ready');  // デバッグログ
   
-  // ツールバーにアイコンを追加
+  // ツールバーの設定
   miro.initialize({
     extensionPoints: {
       toolbar: {
         title: 'CSV to Mindmap',
-        toolbarSvgIcon: '<svg>...</svg>',  // あなたのアイコンSVG
-        librarySvgIcon: '<svg>...</svg>',  // あなたのアイコンSVG
+        toolbarSvgIcon: '<circle cx="12" cy="12" r="9" fill="red"/>',
+        librarySvgIcon: '<circle cx="12" cy="12" r="9" fill="red"/>',
         onClick: async () => {
           const token = localStorage.getItem('miro_access_token');
           if (!token) {
@@ -29,7 +29,6 @@ miro.onReady(() => {
             return;
           }
           
-          // パネルを開く
           await miro.board.ui.openPanel({
             url: '/',
             height: 400
