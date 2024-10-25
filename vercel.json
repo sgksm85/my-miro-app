@@ -1,4 +1,5 @@
 {
+  "framework": "vite",
   "headers": [
     {
       "source": "/(.*)",
@@ -11,15 +12,7 @@
     }
   ],
   "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/callback",
-      "dest": "/index.html"
-    }
+    { "source": "/callback", "destination": "/" },
+    { "source": "/(.*)", "destination": "/" }
   ]
 }
