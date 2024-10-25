@@ -5,6 +5,7 @@ const CLIENT_ID = '3458764604502701348';
 const CLIENT_SECRET = 'm9A6ivHE2yEv2L1I4dulYu0q02QCHXly';
 const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback';
 
+// アクセストークンを取得する関数
 const getAccessToken = async (code: string) => {
   const tokenUrl = 'https://api.miro.com/v1/oauth/token';
   const body = new URLSearchParams({
@@ -15,21 +16,26 @@ const getAccessToken = async (code: string) => {
     client_secret: CLIENT_SECRET,
   });
 
-  const response = await fetch(tokenUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: body.toString(),
-  });
+  try {
+    const response = await fetch(tokenUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: body.toString(),
+    });
 
-  if (!response.ok) {
-    throw new Error('Failed to get access token');
+    const data = await response.json();
+    if (data.access_token) {
+      return data.access_token;
+    } else {
+      console.error('Failed to get access token:', data);
+      throw new Error('Failed to get access token');
+    }
+  } catch (error) {
+    console.error('Error during access token retrieval:', error);
+    throw error;
   }
-
-  const data = await response.json();
-  console.log('Access Token:', data.access_token); // デバッグ用にアクセストークンを出力
-  return data.access_token;
 };
 
 const CallbackPage: React.FC = () => {
