@@ -17,42 +17,34 @@ const generateAuthUrl = () => {
   return `${baseAuthUrl}?${params.toString()}`;
 };
 
-miro.onReady(() => {
-  miro.board.ui.on('icon:click', async () => {
-    const authorized = await miro.isAuthorized();
-    if (!authorized) {
-      const authUrl = generateAuthUrl();
-      window.location.href = authUrl;
-      return;
-    }
-
-    // パネルを開く
-    await miro.board.ui.openPanel({
-      url: '/',
-      height: 400,
-      iconUrl: 'https://example.com/icon.png',  // アイコンURLを指定
-    });
-  });
-});
-
-// Miroの初期化
-miro.onReady(() => {
+miro.onReady(async () => {
   console.log('Miro SDK is ready');
-  miro.board.ui.on('icon:click', async () => {
-    const authorized = await miro.isAuthorized();
-    console.log('Authorization status:', authorized);  // 認証ステータスを確認
-    if (!authorized) {
-      const authUrl = generateAuthUrl();
-      console.log('Redirecting to auth URL:', authUrl);  // 認証URLを確認
-      window.location.href = authUrl;
-      return;
-    }
-
-    await miro.board.ui.openPanel({
-      url: '/',
-      height: 400
+  
+  // アプリがツールバーに表示されているか確認
+  const appIconExists = await miro.board.ui.get('icon');
+  console.log('App Icon Exists:', appIconExists);
+  
+  // アイコンがない場合、明示的に登録する
+  if (!appIconExists) {
+    await miro.board.ui.add('icon', {
+      title: 'My App',
+      svgIcon: '<svg>...</svg>',  // 必要に応じてSVGアイコンを指定
+      onClick: async () => {
+        const authorized = await miro.isAuthorized();
+        console.log('Authorized:', authorized);
+        if (!authorized) {
+          const authUrl = generateAuthUrl();
+          console.log('Redirecting to auth URL:', authUrl);
+          window.location.href = authUrl;
+          return;
+        }
+        await miro.board.ui.openPanel({
+          url: '/',
+          height: 400
+        });
+      }
     });
-  });
+  }
 });
 
 // ドロップゾーンのスタイル定義
