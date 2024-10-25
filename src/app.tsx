@@ -3,13 +3,6 @@ import { useDropzone } from 'react-dropzone';
 import { parseCsv } from './csv-utils';  // CSVをパースするモジュール
 import { createMindmap } from './mindmap';  // マインドマップを作成するモジュール
 
-miro.onReady().then(() => {
-  console.log('Miro SDK is ready');
-  // SDKを使った処理をここに書く
-}).catch((error) => {
-  console.error('Error initializing Miro SDK:', error);
-});
-
 // ドロップゾーンのスタイル定義
 const dropzoneStyles = {
   display: "flex",
@@ -25,6 +18,20 @@ const dropzoneStyles = {
 
 const MainApp: React.FC = () => {
   const [files, setFiles] = React.useState<File[]>([]);
+
+  // Miro SDKの準備
+  React.useEffect(() => {
+    const initializeMiro = async () => {
+      try {
+        await miro.onReady();
+        console.log('Miro SDK is ready');
+      } catch (error) {
+        console.error('Error initializing Miro SDK:', error);
+      }
+    };
+
+    initializeMiro();
+  }, []);
 
   const dropzone = useDropzone({
     accept: {
