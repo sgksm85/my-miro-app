@@ -16,11 +16,9 @@ const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback';
 const ACCESS_TOKEN = 'eytaXJvLm9yaWdpbil6lmV1MDEifQ_4mMwotE0Tr1DtK_hlzTrzYlohWQ';
 
 // Miroの初期化
+// Miroの初期化
 miro.onReady(() => {
   console.log('Miro SDK is ready');
-  
-  // アクセストークンを保存
-  localStorage.setItem('miro_access_token', ACCESS_TOKEN);
   
   // ツールバーの設定
   miro.initialize({
@@ -29,6 +27,14 @@ miro.onReady(() => {
         title: 'CSV to Mindmap',
         toolbarSvgIcon: '<circle cx="12" cy="12" r="9" fill="red"/>',
         onClick: async () => {
+          // アクセストークンをチェック
+          const token = localStorage.getItem('miro_access_token');
+          if (!token) {
+            handleLogin();
+            return;
+          }
+          
+          // パネルを開く
           await miro.board.ui.openPanel({
             url: '/',
             height: 400
