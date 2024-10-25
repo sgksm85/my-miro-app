@@ -81,8 +81,9 @@ const App: React.FC = () => {
     const failed = [];
     for (const file of files) {
       try {
-        const parsedData = await handleFileParse(file);  // ファイルに応じてパース
-        await createMindmap(parsedData);  // パースしたデータからマインドマップ生成
+        const parsedData = await handleFileParse(file);
+        console.log("Parsed Data:", parsedData);  // デバッグ用ログ
+        await createMindmap(parsedData);
       } catch (e) {
         failed.push(file);
         console.error(e);
