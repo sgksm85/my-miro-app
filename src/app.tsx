@@ -1,12 +1,7 @@
 import * as React from 'react';
 import { useDropzone } from 'react-dropzone';
-import { parseCsv } from './csv-utils';
-import { createMindmap } from './mindmap'; // モジュールのパスが正しいか確認
-
-// Miro SDK v2 の初期化処理
-miro.board.getInfo().then(boardInfo => {
-  console.log('Miro SDK is ready', boardInfo);
-});
+import { parseCsv } from './csv-utils';  // CSVをパースするモジュール
+import { createMindmap } from './mindmap';  // マインドマップを作成するモジュール
 
 // ドロップゾーンのスタイル定義
 const dropzoneStyles = {
@@ -33,16 +28,16 @@ const MainApp: React.FC = () => {
     },
   });
 
-// CSVをパースしてマインドマップを作成する処理
-const handleCreate = async () => {
-  try {
-    const contents = await parseCsv(files[0]);  // CSVファイルの内容をパース
-    await createMindmap(contents);  // パースした内容を元にマインドマップを作成
-    console.log('Mind map created successfully');
-  } catch (error) {
-    console.error('Error creating mind map:', error);
-  }
-};
+  // CSVをパースしてマインドマップを作成する処理
+  const handleCreate = async () => {
+    try {
+      const contents = await parseCsv(files[0]);  // CSVファイルの内容をパース
+      await createMindmap(contents);  // パースした内容を元にマインドマップを作成
+      console.log('Mind map created successfully');
+    } catch (error) {
+      console.error('Error creating mind map:', error);
+    }
+  };
 
   const style = React.useMemo(() => {
     let borderColor = "rgba(41, 128, 185, 0.5)";
