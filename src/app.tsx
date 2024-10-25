@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useDropzone } from 'react-dropzone';
 import { parseCsv } from './csv-utils';
-import { createMindmapFromCSV } from './mindmap';
+import { createMindmap } from './mindmap';
 
 const CLIENT_ID = '3458764604502701348';
 const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback';
