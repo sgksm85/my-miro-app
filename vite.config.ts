@@ -6,4 +6,7 @@ export default defineConfig({
   build: {
     target: 'esnext', // ターゲットを esnext に設定
   },
+  esbuild: {
+    target: 'esnext', // esbuild のターゲットも esnext に設定
+  },
 });
