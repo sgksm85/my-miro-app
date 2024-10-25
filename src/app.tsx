@@ -27,17 +27,31 @@ const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
 
   React.useEffect(() => {
-    // Miro SDKの初期化
-    miro.board.ui.on('icon:click', async () => {
-      await miro.board.ui.openPanel({url: 'app.html'});
-    });
+    const initializeMiro = async () => {
+      try {
+        await miro.board.ui.on('icon:click', async () => {
+          await miro.board.ui.openPanel({url: 'app.html'});
+        });
 
-    // アクセストークンの確認と設定
-    const token = localStorage.getItem('miro_access_token');
-    if (token) {
-      setIsLoggedIn(true);
-      miro.setToken(token);
-    }
+        const token = localStorage.getItem('miro_access_token');
+        if (token) {
+          miro.setToken(token);
+          const isAuthorized = await miro.isAuthorized();
+          if (isAuthorized) {
+            setIsLoggedIn(true);
+          } else {
+            // トークンが無効な場合、ローカルストレージからクリア
+            localStorage.removeItem('miro_access_token');
+            setIsLoggedIn(false);
+          }
+        }
+      } catch (error) {
+        console.error('Error initializing Miro:', error);
+        setIsLoggedIn(false);
+      }
+    };
+
+    initializeMiro();
   }, []);
 
   // ドロップゾーンの設定

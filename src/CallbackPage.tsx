@@ -38,14 +38,22 @@ const CallbackPage: React.FC = () => {
         console.log('Access Token:', token);
         localStorage.setItem('miro_access_token', token);
         
-        // Miro SDKの初期化とトークンの設定
         miro.onReady(() => {
           miro.setToken(token);
-          // ここでボードページにリダイレクトする
-          window.location.href = '/'; // アプリのメインページへリダイレクト
+          // トークンが有効かどうかを確認
+          miro.isAuthorized().then((isAuthorized) => {
+            if (isAuthorized) {
+              window.location.href = '/'; // アプリのメインページへリダイレクト
+            } else {
+              console.error('Token is not valid');
+              localStorage.removeItem('miro_access_token');
+              // エラーページまたはログインページにリダイレクト
+            }
+          });
         });
       }).catch((error) => {
         console.error('Failed to get access token:', error);
+        // エラーページまたはログインページにリダイレクト
       });
     }
   }, []);
