@@ -1,0 +1,13 @@
+Category,Subcategory,Item
+Mindmap,Use Cases,Brainstorming
+Mindmap,Use Cases,Structuring Research
+Mindmap,Use Cases,Designing Information Architecture
+Mindmap,Features,Collaboration
+Mindmap,Features,Real-time Collaboration
+Mindmap,Features,Infinite Canvas
+Mindmap,Features,Commenting
+Mindmap,Features,Video Chat
+
+
+
+npm run dev
