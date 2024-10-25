@@ -1,10 +1,8 @@
 export async function init() {
+  // Miroアプリが開かれた際にパネルを表示
   miro.board.ui.on('icon:click', async () => {
     await miro.board.ui.openPanel({ url: 'app.html' });
   });
 }
 
-// MiroのSDKが読み込まれた後に初期化を実行
-miro.onReady(() => {
-  init();
-});
+init();
