@@ -9,5 +9,11 @@
   "url": "https://my-miro-app.vercel.app",
   "redirectUris": [
     "https://my-miro-app.vercel.app/callback"
-  ]
+  ],
+  "appId": "3458764604502701348",
+  "icon": {
+    "url": "https://my-miro-app.vercel.app/assets/icon.svg",
+    "width": 24,
+    "height": 24
+  }
 }
