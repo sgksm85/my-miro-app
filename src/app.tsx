@@ -48,7 +48,6 @@ const handleFileParse = async (file: File) => {
 const convertMarkdownToMindmap = (parsedMarkdown: any) => {
   // Markdownの解析結果を元に、マインドマップのツリー構造を作成
   const root = { content: 'Mindmap', children: [] };
-  // 適切なマインドマップの構造に変換するロジックをここに記述
   return root;
 };
 
