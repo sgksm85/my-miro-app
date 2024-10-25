@@ -4,12 +4,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/assets/style.css" />
-    <script src="https://miro.com/app/static/sdk/v2/miro.js"></script>
+    <!-- SDKのバージョンを明示的に指定 -->
+    <script src="https://miro.com/app/static/sdk/v2/miro.js?v=2.0.1"></script>
     <title>My Miro App</title>
   </head>
   <body>
     <div id="root"></div>
-    <!-- main.tsxを参照するように変更 -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

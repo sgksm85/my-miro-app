@@ -1,18 +1,16 @@
 {
-  "framework": "vite",
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
         {
           "key": "Permissions-Policy",
-          "value": "browsing-topics=(), private-state-token-issuance=(), private-state-token-redemption=()"
+          "value": "browsing-topics=self, private-state-token-issuance=self, private-state-token-redemption=self"
         }
       ]
     }
   ],
   "rewrites": [
-    { "source": "/callback", "destination": "/" },
-    { "source": "/(.*)", "destination": "/" }
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
