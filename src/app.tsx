@@ -17,34 +17,28 @@ const generateAuthUrl = () => {
   return `${baseAuthUrl}?${params.toString()}`;
 };
 
-miro.onReady(async () => {
+miro.onReady(() => {
   console.log('Miro SDK is ready');
   
-  // アプリがツールバーに表示されているか確認
-  const appIconExists = await miro.board.ui.get('icon');
-  console.log('App Icon Exists:', appIconExists);
-  
-  // アイコンがない場合、明示的に登録する
-  if (!appIconExists) {
-    await miro.board.ui.add('icon', {
-      title: 'My App',
-      svgIcon: '<svg>...</svg>',  // 必要に応じてSVGアイコンを指定
-      onClick: async () => {
-        const authorized = await miro.isAuthorized();
-        console.log('Authorized:', authorized);
-        if (!authorized) {
-          const authUrl = generateAuthUrl();
-          console.log('Redirecting to auth URL:', authUrl);
-          window.location.href = authUrl;
-          return;
-        }
-        await miro.board.ui.openPanel({
-          url: '/',
-          height: 400
-        });
+  // アイコンがツールバーに存在しない場合、追加する
+  miro.board.ui.add('icon', {
+    title: 'CSV to Mindmap',
+    svgIcon: '<svg width="24" height="24"><circle cx="12" cy="12" r="10" stroke="black" stroke-width="2" fill="blue"/></svg>',
+    onClick: async () => {
+      const authorized = await miro.isAuthorized();
+      console.log('Authorized:', authorized);
+      if (!authorized) {
+        const authUrl = generateAuthUrl();
+        console.log('Redirecting to auth URL:', authUrl);
+        window.location.href = authUrl;
+        return;
       }
-    });
-  }
+      await miro.board.ui.openPanel({
+        url: '/',
+        height: 400,
+      });
+    }
+  });
 });
 
 // ドロップゾーンのスタイル定義
