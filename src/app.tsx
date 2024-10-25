@@ -17,8 +17,12 @@ const generateAuthUrl = () => {
   return `${baseAuthUrl}?${params.toString()}`;
 };
 
+const authorized = await miro.isAuthorized();
+console.log('Authorized:', authorized);  // 認証状態を確認
+
 miro.onReady(() => {
   console.log('Miro SDK is ready');
+  
   // ツールバーにアイコンを追加
   miro.board.ui.add('icon', {
     title: 'CSV to Mindmap',
@@ -28,7 +32,6 @@ miro.onReady(() => {
       console.log('Authorized:', authorized);
       if (!authorized) {
         const authUrl = generateAuthUrl();
-        console.log('Redirecting to auth URL:', authUrl);
         window.location.href = authUrl;
         return;
       }
