@@ -3,6 +3,12 @@ import { useDropzone } from 'react-dropzone';
 import { parseCsv } from './csv-utils';  // CSVをパースするモジュール
 import { createMindmap } from './mindmap';  // マインドマップを作成するモジュール
 
+miro.onReady(async () => {
+  // SDKの初期化
+  await miro.initialize();
+  console.log('Miro SDK initialized');
+});
+
 const MainApp: React.FC = () => {
   const [files, setFiles] = React.useState<File[]>([]);
 
