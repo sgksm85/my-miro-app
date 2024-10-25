@@ -11,21 +11,32 @@ declare const miro: any;
 const CLIENT_ID = '3458764604502701348';
 const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback';
 
-// Miro SDKの初期化
+// Miroの初期化
 miro.onReady(() => {
-  // アプリアイコンがクリックされたときの処理
-  miro.board.ui.on('icon:click', async () => {
-    const token = localStorage.getItem('miro_access_token');
-    if (!token) {
-      handleLogin();
-      return;
-    }
-    
-    // 認証済みの場合はパネルを開く
-    await miro.board.ui.openPanel({
-      url: '/',
-      height: 400
-    });
+  console.log('Miro SDK is ready');  // デバッグログ
+  
+  // ツールバーにアイコンを追加
+  miro.initialize({
+    extensionPoints: {
+      toolbar: {
+        title: 'CSV to Mindmap',
+        toolbarSvgIcon: '<svg>...</svg>',  // あなたのアイコンSVG
+        librarySvgIcon: '<svg>...</svg>',  // あなたのアイコンSVG
+        onClick: async () => {
+          const token = localStorage.getItem('miro_access_token');
+          if (!token) {
+            handleLogin();
+            return;
+          }
+          
+          // パネルを開く
+          await miro.board.ui.openPanel({
+            url: '/',
+            height: 400
+          });
+        },
+      },
+    },
   });
 });
 

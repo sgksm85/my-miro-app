@@ -2,18 +2,22 @@
   "name": "CSV to Mindmap",
   "description": "Create mindmaps from CSV files",
   "version": "1.0.0",
+  "appId": "3458764604502701348",
   "permissions": [
     "boards:read",
     "boards:write"
   ],
+  "scopes": [
+    "boards:read",
+    "boards:write"
+  ],
+  "icon": {
+    "url": "https://my-miro-app.vercel.app/icon.svg",
+    "width": 24,
+    "height": 24
+  },
   "url": "https://my-miro-app.vercel.app",
   "redirectUris": [
     "https://my-miro-app.vercel.app/callback"
-  ],
-  "appId": "3458764604502701348",
-  "icon": {
-    "url": "https://my-miro-app.vercel.app/assets/icon.svg",
-    "width": 24,
-    "height": 24
-  }
+  ]
 }
