@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';  // 追加
 
 const CallbackPage = () => {
+  const navigate = useNavigate();  // React Routerのナビゲーション
+
   useEffect(() => {
-    // デバッグログを追加
-    console.log('Callback page loaded');
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
-    console.log('Auth code:', code);  // codeの値を確認
+    console.log('Auth code:', code);  // デバッグ用
 
     if (code) {
-      console.log('Attempting to get access token...');
       fetch('https://api.miro.com/v1/oauth/token', {
         method: 'POST',
         headers: {
@@ -23,32 +23,30 @@ const CallbackPage = () => {
           redirect_uri: 'https://my-miro-app.vercel.app/callback'
         })
       })
-      .then(response => {
-        console.log('Response status:', response.status);
-        return response.json();
-      })
+      .then(response => response.json())
       .then(data => {
-        console.log('Token response:', data);  // レスポンスデータを確認
         if (data.access_token) {
           localStorage.setItem('miro_access_token', data.access_token);
-          console.log('Token saved, redirecting...');
-          window.location.href = '/';
+          // window.location.href の代わりにnavigateを使用
+          navigate('/');
         } else {
-          console.error('No access token in response');
+          console.error('Token error:', data);
+          navigate('/?error=token_error');
         }
       })
       .catch(error => {
-        console.error('Error during token request:', error);
+        console.error('Error:', error);
+        navigate('/?error=fetch_error');
       });
     } else {
-      console.error('No code parameter found in URL');
+      navigate('/?error=no_code');
     }
-  }, []);
+  }, [navigate]);
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>Processing authentication...</h2>
-      <p>Please check the browser console for debug information.</p>
+    <div style={{ padding: '20px', textAlign: 'center' }}>
+      <h2>認証処理中...</h2>
+      <p>しばらくお待ちください</p>
     </div>
   );
 };
