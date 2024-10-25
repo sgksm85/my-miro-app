@@ -6,6 +6,32 @@ import { parseCsv } from './csv-utils';
 import { createMindmapFromCSV } from './mindmap';
 import CallbackPage from './pages/callback';
 
+// Miro SDKの初期化
+async function initMiroSDK() {
+  try {
+    // SDKの初期化
+    await miro.board.ui.on('icon:click', async () => {
+      // アクセストークンのチェック
+      const token = localStorage.getItem('miro_access_token');
+      if (!token) {
+        handleLogin();
+        return;
+      }
+      
+      // 認証済みの場合はアプリを表示
+      await miro.board.ui.openPanel({
+        url: 'index.html',
+        height: 400
+      });
+    });
+  } catch (error) {
+    console.error('Miro SDK initialization failed:', error);
+  }
+}
+
+// アプリ起動時にSDKを初期化
+initMiroSDK();
+
 const CLIENT_ID = '3458764604502701348';
 const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback';
 
