@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 const CLIENT_ID = '3458764604502701348';
 const CLIENT_SECRET = 'm9A6ivHE2yEv2L1I4dulYu0q02QCHXly';
-const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback';
+const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback'; // Miroに登録した値と完全一致
 
 const getAccessToken = async (code: string) => {
   const response = await fetch('https://api.miro.com/v1/oauth/token', {
