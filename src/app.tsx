@@ -20,10 +20,10 @@ const generateAuthUrl = () => {
 miro.onReady(() => {
   console.log('Miro SDK is ready');
   
-  // アイコンがツールバーに存在しない場合、追加する
+  // ツールバーにアイコンを追加する
   miro.board.ui.add('icon', {
-    title: 'CSV to Mindmap',
-    svgIcon: '<svg width="24" height="24"><circle cx="12" cy="12" r="10" stroke="black" stroke-width="2" fill="blue"/></svg>',
+    title: 'CSV to Mindmap',  // アプリのタイトル
+    svgIcon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="blue"/></svg>',  // アイコンSVG
     onClick: async () => {
       const authorized = await miro.isAuthorized();
       console.log('Authorized:', authorized);
@@ -33,9 +33,10 @@ miro.onReady(() => {
         window.location.href = authUrl;
         return;
       }
+
       await miro.board.ui.openPanel({
         url: '/',
-        height: 400,
+        height: 400
       });
     }
   });
