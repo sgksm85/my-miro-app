@@ -17,6 +17,24 @@ const generateAuthUrl = () => {
   return `${baseAuthUrl}?${params.toString()}`;
 };
 
+miro.onReady(() => {
+  miro.board.ui.on('icon:click', async () => {
+    const authorized = await miro.isAuthorized();
+    if (!authorized) {
+      const authUrl = generateAuthUrl();
+      window.location.href = authUrl;
+      return;
+    }
+
+    // パネルを開く
+    await miro.board.ui.openPanel({
+      url: '/',
+      height: 400,
+      iconUrl: 'https://example.com/icon.png',  // アイコンURLを指定
+    });
+  });
+});
+
 // Miroの初期化
 miro.onReady(() => {
   console.log('Miro SDK is ready');
