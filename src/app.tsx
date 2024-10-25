@@ -26,18 +26,18 @@ const generateAuthUrl = () => {
 const handleFileParse = async (file: File) => {
   const fileType = file.name.split('.').pop()?.toLowerCase();
   
-  // CSVの場合
   if (fileType === "csv") {
     const csvContents = await file.text();
     const parsedCsv = await parseCsv(csvContents);
+    console.log("Parsed CSV:", parsedCsv);  // CSVの解析結果を確認
     return parsedCsv;  // CSVデータを返す
   }
 
-  // Markdownの場合
   if (fileType === "md") {
     const md = new MarkdownIt();
     const markdownContents = await file.text();
     const parsedMarkdown = md.parse(markdownContents, {});
+    console.log("Parsed Markdown:", parsedMarkdown);  // Markdownの解析結果を確認
     return convertMarkdownToMindmap(parsedMarkdown);  // Markdownデータを返す
   }
 

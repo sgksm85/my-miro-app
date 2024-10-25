@@ -1,0 +1,10 @@
+- Mindmap
+  - Use Cases
+    - Brainstorming
+    - Structuring Research
+    - Designing Information Architecture
+  - Features
+    - Real-time Collaboration
+    - Infinite Canvas
+    - Commenting
+    - Video Chat
