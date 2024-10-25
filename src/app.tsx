@@ -47,19 +47,16 @@ const MainApp: React.FC = () => {
     },
   });
 
-  const handleCreate = async () => {
-    const failed = [];
-    for (const file of files) {
-      try {
-        const contents = await parseCsv(file);
-        await createMindmap(contents);
-      } catch (e) {
-        failed.push(file);
-        console.error(e);
-      }
-    }
-    setFiles([]);
-  };
+// CSVをパースしてマインドマップを作成する処理
+const handleCreate = async () => {
+  try {
+    const contents = await parseCsv(files[0]);  // CSVファイルの内容をパース
+    await createMindmap(contents);  // パースした内容を元にマインドマップを作成
+    console.log('Mind map created successfully');
+  } catch (error) {
+    console.error('Error creating mind map:', error);
+  }
+};
 
   const style = React.useMemo(() => {
     let borderColor = "rgba(41, 128, 185, 0.5)";
