@@ -3,7 +3,7 @@ import { DSVRowArray } from "d3-dsv";
 // Miroボードにノードを追加する関数
 const createMindmapNode = async (nodeData: any, x: number, y: number) => {
   try {
-    console.log("Creating node for:", nodeData);  // デバッグログ追加
+    console.log("Creating node for:", nodeData);
     const node = await miro.board.widgets.create({
       type: 'text',
       text: nodeData.content || 'No content',
