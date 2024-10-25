@@ -1,5 +1,8 @@
 {
-  "routes": [
-    { "src": "/callback", "dest": "/src/callback.tsx" }
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
