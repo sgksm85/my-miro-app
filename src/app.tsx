@@ -31,18 +31,23 @@ const App: React.FC = () => {
   };
 
   const handleCreateMindmap = async () => {
-    if (files.length === 0) {
-      alert('Please select a file first.');
+    const token = localStorage.getItem('miro_access_token');
+    if (!token) {
+      alert('Please login to Miro first.');
+      window.location.href = generateAuthUrl(); // ログインページにリダイレクト
       return;
     }
-
+  
     try {
-      await miro.board.ui.openModal({
-        url: 'modal.html',
-        width: 400,
-        height: 200,
+      miro.onReady(() => {
+        miro.setToken(token);  // トークンを設定
       });
-
+  
+      if (files.length === 0) {
+        alert('Please select a file first.');
+        return;
+      }
+  
       await handleFileParseAndCreateMindmap(files[0]);
       alert('Mindmap creation complete!');
       setFiles([]);

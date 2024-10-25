@@ -1,11 +1,10 @@
 import * as React from "react";
 import { useEffect } from "react";
 
-const CLIENT_ID = '3458764604502701348';  // ここにクライアントIDを設定
-const CLIENT_SECRET = 'm9A6ivHE2yEv2L1I4dulYu0q02QCHXly';  // クライアントシークレット
-const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback';  // リダイレクトURI
+const CLIENT_ID = '3458764604502701348';
+const CLIENT_SECRET = 'm9A6ivHE2yEv2L1I4dulYu0q02QCHXly';
+const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback';
 
-// アクセストークンを取得する関数
 const getAccessToken = async (code: string) => {
   const tokenUrl = 'https://api.miro.com/v1/oauth/token';
   const body = new URLSearchParams({
@@ -25,7 +24,7 @@ const getAccessToken = async (code: string) => {
   });
 
   const data = await response.json();
-  return data.access_token;  // アクセストークンを返す
+  return data.access_token;
 };
 
 const CallbackPage: React.FC = () => {
@@ -37,23 +36,9 @@ const CallbackPage: React.FC = () => {
       getAccessToken(code).then((token) => {
         console.log('Access Token:', token);
         localStorage.setItem('miro_access_token', token);
-        
-        miro.onReady(() => {
-          miro.setToken(token);
-          // トークンが有効かどうかを確認
-          miro.isAuthorized().then((isAuthorized) => {
-            if (isAuthorized) {
-              window.location.href = '/'; // アプリのメインページへリダイレクト
-            } else {
-              console.error('Token is not valid');
-              localStorage.removeItem('miro_access_token');
-              // エラーページまたはログインページにリダイレクト
-            }
-          });
-        });
+        window.location.href = '/'; // アプリのメインページへリダイレクト
       }).catch((error) => {
         console.error('Failed to get access token:', error);
-        // エラーページまたはログインページにリダイレクト
       });
     }
   }, []);

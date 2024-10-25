@@ -2,8 +2,14 @@ import { DSVRowArray } from 'd3-dsv';
 
 // Miroボードにノードを追加する関数
 const createMindmapNode = async (nodeData: any, x: number, y: number): Promise<any> => {
+  const token = localStorage.getItem('miro_access_token');
+  if (!token) {
+    throw new Error('No access token found');
+  }
+
   try {
-    console.log('Creating node for:', nodeData);
+    miro.setToken(token);  // トークンを再度設定（念のため）
+
     const [node] = await miro.board.createShape({
       content: nodeData.content || 'No content',
       x: x,
@@ -11,15 +17,13 @@ const createMindmapNode = async (nodeData: any, x: number, y: number): Promise<a
       shape: 'rectangle',
     });
 
-    // 子ノードがある場合は再帰的に追加
     if (nodeData.children && nodeData.children.length > 0) {
-      let childX = x + 200; // 子ノードの位置調整
+      let childX = x + 200;
       let childY = y - ((nodeData.children.length - 1) * 100) / 2;
 
       for (const child of nodeData.children) {
         const childNode = await createMindmapNode(child, childX, childY);
         if (childNode) {
-          // ノード間を接続する線を作成
           await miro.board.createConnector({
             start: {
               item: node.id,
@@ -29,7 +33,7 @@ const createMindmapNode = async (nodeData: any, x: number, y: number): Promise<a
             },
           });
         }
-        childY += 100; // 各子ノードのY位置を調整
+        childY += 100;
       }
     }
 
