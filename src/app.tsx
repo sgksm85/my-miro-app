@@ -20,18 +20,16 @@ const generateAuthUrl = () => {
 // Miroの初期化
 miro.onReady(() => {
   console.log('Miro SDK is ready');
-  
-  // ツールバーの設定
   miro.board.ui.on('icon:click', async () => {
     const authorized = await miro.isAuthorized();
+    console.log('Authorization status:', authorized);  // 認証ステータスを確認
     if (!authorized) {
-      // 未認証の場合は認証フローを開始
       const authUrl = generateAuthUrl();
+      console.log('Redirecting to auth URL:', authUrl);  // 認証URLを確認
       window.location.href = authUrl;
       return;
     }
 
-    // パネルを開く
     await miro.board.ui.openPanel({
       url: '/',
       height: 400
