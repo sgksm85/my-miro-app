@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 import { useDropzone } from 'react-dropzone';
-import { parseCsv } from './csv-utils'; // CSV解析用のユーティリティ
+import { parseCsv } from './csv-utils';
 import MarkdownIt from 'markdown-it';
-import { createMindmapFromCSV, createMindmapFromMarkdown } from './mindmap'; // マインドマップ生成用の関数
+import { createMindmapFromCSV, createMindmapFromMarkdown } from './mindmap';
 
 // MiroのクライアントIDとリダイレクトURI
 const CLIENT_ID = '3458764604502701348'; // ここにMiroのクライアントIDを設定
@@ -13,10 +13,10 @@ const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback'; // ここにリ�
 const generateAuthUrl = () => {
   const baseAuthUrl = 'https://miro.com/oauth/authorize';
   const params = new URLSearchParams({
-    response_type: 'code', // Authorization Code Flow
+    response_type: 'code',
     client_id: CLIENT_ID,
     redirect_uri: REDIRECT_URI,
-    scope: 'boards:read boards:write', // 必要なスコープ
+    scope: 'boards:read boards:write',
   });
 
   return `${baseAuthUrl}?${params.toString()}`;
@@ -30,7 +30,7 @@ const App: React.FC = () => {
     setFiles(acceptedFiles);
   }, []);
 
-  const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
       'text/csv': ['.csv'],
