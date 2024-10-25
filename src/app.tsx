@@ -20,25 +20,6 @@ const generateAuthUrl = () => {
 // Miro SDK v2 の初期化処理
 miro.board.getInfo().then(boardInfo => {
   console.log('Miro SDK is ready', boardInfo);
-  
-  miro.board.ui.add('icon', {
-    title: 'CSV to Mindmap',
-    svgIcon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="blue"/></svg>',
-    onClick: async () => {
-      const authorized = await miro.isAuthorized();
-      console.log('Authorized:', authorized);
-      if (!authorized) {
-        const authUrl = generateAuthUrl();
-        window.location.href = authUrl;
-        return;
-      }
-
-      await miro.board.ui.openPanel({
-        url: '/',
-        height: 400
-      });
-    }
-  });
 });
 
 // ドロップゾーンのスタイル定義
