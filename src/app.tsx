@@ -3,6 +3,12 @@ import { useDropzone } from 'react-dropzone';
 import { parseCsv } from './csv-utils';  // CSVをパースするモジュール
 import { createMindmap } from './mindmap';  // マインドマップを作成するモジュール
 
+miro.onReady().then(() => {
+  console.log('Miro SDK is ready');
+}).catch((error) => {
+  console.error('Miro SDK error:', error);
+});
+
 // ドロップゾーンのスタイル定義
 const dropzoneStyles = {
   display: "flex",
@@ -18,6 +24,7 @@ const dropzoneStyles = {
 
 const MainApp: React.FC = () => {
   const [files, setFiles] = React.useState<File[]>([]);
+
   const dropzone = useDropzone({
     accept: {
       "text/csv": [".csv"],
@@ -30,6 +37,11 @@ const MainApp: React.FC = () => {
 
   // CSVをパースしてマインドマップを作成する処理
   const handleCreate = async () => {
+    if (files.length === 0) {
+      console.error('No file selected');
+      return;
+    }
+
     try {
       const contents = await parseCsv(files[0]);  // CSVファイルの内容をパース
       console.log('Parsed CSV contents:', contents);  // ここで内容を確認
@@ -39,7 +51,7 @@ const MainApp: React.FC = () => {
       console.error('Error creating mind map:', error);
     }
   };
-  
+
   const style = React.useMemo(() => {
     let borderColor = "rgba(41, 128, 185, 0.5)";
     if (dropzone.isDragAccept) {
@@ -60,7 +72,7 @@ const MainApp: React.FC = () => {
       <div {...dropzone.getRootProps({ style })}>
         <input {...dropzone.getInputProps()} />
         {dropzone.isDragAccept ? (
-          <p className="dnd-text">Drop your CSV file are here</p>
+          <p className="dnd-text">Drop your CSV file here</p>
         ) : (
           <>
             <div>
