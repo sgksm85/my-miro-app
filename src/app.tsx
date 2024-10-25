@@ -12,11 +12,6 @@ const CLIENT_ID = '3458764604502701348';
 const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback';
 
 // Miroの初期化
-// 取得したアクセストークンを使用
-const ACCESS_TOKEN = 'eytaXJvLm9yaWdpbil6lmV1MDEifQ_4mMwotE0Tr1DtK_hlzTrzYlohWQ';
-
-// Miroの初期化
-// Miroの初期化
 miro.onReady(() => {
   console.log('Miro SDK is ready');
   
