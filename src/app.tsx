@@ -17,8 +17,9 @@ const generateAuthUrl = () => {
   return `${baseAuthUrl}?${params.toString()}`;
 };
 
-miro.onReady(() => {
-  console.log('Miro SDK is ready');
+// Miro SDK v2 の初期化処理
+miro.board.getInfo().then(boardInfo => {
+  console.log('Miro SDK is ready', boardInfo);
   
   miro.board.ui.add('icon', {
     title: 'CSV to Mindmap',
