@@ -82,7 +82,7 @@ const App: React.FC = () => {
 
   return (
     <div>
-      <h1>Miro OAuth Example</h1>
+      <h1>Miro CSV to Mindmap</h1>
       <button onClick={handleLogin}>Login with Miro</button>
 
       <div className="dnd-container">
