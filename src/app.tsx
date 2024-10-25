@@ -18,26 +18,19 @@ const generateAuthUrl = () => {
 };
 
 miro.onReady(async () => {
-  console.log('Miro SDK is ready');
-
   const authorized = await miro.isAuthorized();
-  console.log('Authorization status:', authorized);  // 認証状況を確認
   if (!authorized) {
     const authUrl = generateAuthUrl();
-    console.log('Redirecting to auth URL:', authUrl);
     window.location.href = authUrl;
     return;
   }
 
-  // 認証後、ツールバーにアイコンを追加する
+  // 認証が成功した場合の処理
   miro.board.ui.add('icon', {
     title: 'CSV to Mindmap',
     svgIcon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="blue"/></svg>',
     onClick: async () => {
-      await miro.board.ui.openPanel({
-        url: '/',
-        height: 400
-      });
+      await miro.board.ui.openPanel({ url: '/', height: 400 });
     }
   });
 });

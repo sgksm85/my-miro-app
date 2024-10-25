@@ -2,11 +2,8 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "lib": [
-      "esnext",
-      "dom"
-    ],
-    "jsx": "preserve",
+    "lib": ["esnext", "dom"],
+    "jsx": "react-jsx",  // JSX設定を変更
     "moduleResolution": "node",
     "strict": true,
     "sourceMap": true,
@@ -18,20 +15,13 @@
     "noImplicitReturns": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "typeRoots": [
-      "./node_modules/@types",
-      "./node_modules/@mirohq"
-    ],
-    "allowJs": true,
+    "isolatedModules": true,
     "incremental": true,
-    "isolatedModules": true
+    "allowJs": false  // JavaScriptを含めない場合はfalseに
   },
   "include": [
     "src",
-    "src/pages",
     "*.ts"
-, "src/pages"  ],
-  "exclude": [
-    "node_modules"
-  ]
+  ],
+  "exclude": ["node_modules"]
 }
