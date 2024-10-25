@@ -4,15 +4,28 @@ import { useDropzone } from 'react-dropzone';
 import { parseCsv } from './csv-utils';
 import { createMindmapFromCSV } from './mindmap';
 
+const CLIENT_ID = '3458764604502701348';  // MiroのクライアントID
+const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback';  // リダイレクトURI
+
+// 認証URLを生成する関数
+const generateAuthUrl = () => {
+  const baseAuthUrl = 'https://miro.com/oauth/authorize';
+  const params = new URLSearchParams({
+    response_type: 'code',  // Authorization Code Flow
+    client_id: CLIENT_ID,
+    redirect_uri: REDIRECT_URI,
+    scope: 'boards:read boards:write',  // 必要なスコープ
+  });
+  return `${baseAuthUrl}?${params.toString()}`;
+};
+
+// 認証のための関数
+const handleLogin = () => {
+  window.location.href = generateAuthUrl();
+};
+
 const App: React.FC = () => {
   const [files, setFiles] = React.useState<File[]>([]);
-
-  // Miro SDKが正しくロードされているか確認
-  React.useEffect(() => {
-    miro.onReady(() => {
-      console.log("Miro SDK is ready.");
-    });
-  }, []);  // 空の依存配列で一度だけ実行
 
   // ドロップゾーンの設定
   const onDrop = React.useCallback((acceptedFiles: File[]) => {
@@ -49,6 +62,8 @@ const App: React.FC = () => {
   return (
     <div style={{ padding: '20px' }}>
       <h1>CSV to Mindmap</h1>
+      <button onClick={handleLogin}>Login with Miro</button>  {/* Miroへのログインボタン */}
+      
       <div
         {...getRootProps()}
         style={{
