@@ -15,9 +15,9 @@ const getAccessToken = async (code: string) => {
     body: new URLSearchParams({
       grant_type: 'authorization_code',
       code: code,
-      redirect_uri: 'https://my-miro-app.vercel.app/callback', // ここを確認
-      client_id: 'YOUR_CLIENT_ID',  // クライアントID
-      client_secret: 'YOUR_CLIENT_SECRET' // クライアントシークレット
+      redirect_uri: REDIRECT_URI, // 変数を使用
+      client_id: CLIENT_ID,  // 修正：変数を使用
+      client_secret: CLIENT_SECRET  // 修正：変数を使用
     })
   });
 

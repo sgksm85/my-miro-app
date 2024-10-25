@@ -1,8 +1,45 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 import { useDropzone } from 'react-dropzone';
-import { parseCsv } from './csv-utils'; // CSV解析用のユーティリティ
-import { createMindmapFromCSV } from './mindmap'; // マインドマップ生成用の関数
+import { parseCsv } from './csv-utils';
+import MarkdownIt from 'markdown-it';
+import { createMindmapFromCSV, createMindmapFromMarkdown } from './mindmap';
+
+// Miro SDKが正しくロードされているか確認
+miro.onReady(() => {
+  console.log("Miro SDK is connected");
+});
+
+const CLIENT_ID = '3458764604502701348';  // MiroのクライアントID
+const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback';  // リダイレクトURI
+
+// 認証URLを生成する関数
+const generateAuthUrl = () => {
+  const baseAuthUrl = 'https://miro.com/oauth/authorize';
+  const params = new URLSearchParams({
+    response_type: 'code',  // Authorization Code Flow
+    client_id: CLIENT_ID,
+    redirect_uri: REDIRECT_URI,
+    scope: 'boards:read boards:write',  // 必要なスコープ
+  });
+  return `${baseAuthUrl}?${params.toString()}`;
+};
+
+// アプリ初回ロード時にトークンを確認する
+const checkAuthToken = () => {
+  const token = localStorage.getItem('miro_access_token');
+  if (!token) {
+    // トークンがない場合は認証へリダイレクト
+    window.location.href = generateAuthUrl();
+  } else {
+    console.log("Token is available: ", token);
+  }
+};
+
+// アプリの起動時にトークン確認を実行
+React.useEffect(() => {
+  checkAuthToken();
+}, []);
 
 const App: React.FC = () => {
   const [files, setFiles] = React.useState<File[]>([]);
