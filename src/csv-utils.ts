@@ -21,7 +21,8 @@ const readFile = (file: File): Promise<string> =>
     reader.readAsText(file, "utf-8");
   });
 
-export const parseCsv = async (file: File) => {
-  const str = await readFile(file);
-  return csvParse(str);
-};
+  export const parseCsv = async (file: File) => {
+    const str = await readFile(file);
+    console.log('CSV file content:', str);  // ここで確認
+    return csvParse(str);
+  };

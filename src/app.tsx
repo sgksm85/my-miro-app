@@ -32,13 +32,14 @@ const MainApp: React.FC = () => {
   const handleCreate = async () => {
     try {
       const contents = await parseCsv(files[0]);  // CSVファイルの内容をパース
+      console.log('Parsed CSV contents:', contents);  // ここで内容を確認
       await createMindmap(contents);  // パースした内容を元にマインドマップを作成
       console.log('Mind map created successfully');
     } catch (error) {
       console.error('Error creating mind map:', error);
     }
   };
-
+  
   const style = React.useMemo(() => {
     let borderColor = "rgba(41, 128, 185, 0.5)";
     if (dropzone.isDragAccept) {
