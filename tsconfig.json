@@ -30,7 +30,7 @@
     "src",
     "pages",
     "*.ts"
-  ],
+, "pages"  ],
   "exclude": [
     "node_modules"
   ]

@@ -1,33 +1,31 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { parseCsv } from './csv-utils';
 import { createMindmapFromCSV } from './mindmap';
+import CallbackPage from './pages/callback';
 
-const CLIENT_ID = '3458764604502701348';  // MiroのクライアントID
-const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback';  // リダイレクトURI
+const CLIENT_ID = '3458764604502701348';
+const REDIRECT_URI = 'https://my-miro-app.vercel.app/callback';
 
-// 認証URLを生成する関数
 const generateAuthUrl = () => {
   const baseAuthUrl = 'https://miro.com/oauth/authorize';
   const params = new URLSearchParams({
-    response_type: 'code',  // Authorization Code Flow
+    response_type: 'code',
     client_id: CLIENT_ID,
     redirect_uri: REDIRECT_URI,
-    scope: 'boards:read boards:write',  // 必要なスコープ
+    scope: 'boards:read boards:write',
   });
   return `${baseAuthUrl}?${params.toString()}`;
 };
 
-// 認証のための関数
 const handleLogin = () => {
   window.location.href = generateAuthUrl();
 };
 
-const App: React.FC = () => {
+const MainApp: React.FC = () => {
   const [files, setFiles] = React.useState<File[]>([]);
-
-  // ドロップゾーンの設定
   const onDrop = React.useCallback((acceptedFiles: File[]) => {
     setFiles(acceptedFiles);
   }, []);
@@ -35,12 +33,11 @@ const App: React.FC = () => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'text/csv': ['.csv'],  // CSVファイルのみ許可
+      'text/csv': ['.csv'],
     },
     maxFiles: 1,
   });
 
-  // CSVファイルを解析してMiroボードにマインドマップを作成する関数
   const handleCreateMindmap = async () => {
     if (files.length === 0) {
       alert('Please select a CSV file first.');
@@ -52,32 +49,25 @@ const App: React.FC = () => {
     reader.onload = async (e) => {
       const content = e.target?.result as string;
       const parsedCsv = parseCsv(content);
-      await createMindmapFromCSV(parsedCsv);  // CSVからマインドマップを生成
+      await createMindmapFromCSV(parsedCsv);
       alert('Mindmap creation complete!');
-      setFiles([]);  // ファイルをクリア
+      setFiles([]);
     };
-    reader.readAsText(file);  // ファイルの読み込み
+    reader.readAsText(file);
   };
 
   return (
     <div style={{ padding: '20px' }}>
       <h1>CSV to Mindmap</h1>
-      <button onClick={handleLogin}>Login with Miro</button>  {/* Miroへのログインボタン */}
+      <button onClick={handleLogin}>Login with Miro</button>
       
-      <div
-        {...getRootProps()}
-        style={{
-          border: '2px dashed #cccccc',
-          padding: '20px',
-          marginBottom: '20px',
-        }}
-      >
+      <div {...getRootProps()} style={{
+        border: '2px dashed #cccccc',
+        padding: '20px',
+        marginBottom: '20px',
+      }}>
         <input {...getInputProps()} />
-        {
-          isDragActive ?
-            <p>Drop the file here ...</p> :
-            <p>Drag 'n' drop a CSV file here, or click to select one</p>
-        }
+        {isDragActive ? <p>Drop the file here ...</p> : <p>Drag 'n' drop a CSV file here, or click to select one</p>}
       </div>
       {files.length > 0 && (
         <div>
@@ -93,6 +83,17 @@ const App: React.FC = () => {
         Create Mindmap
       </button>
     </div>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<MainApp />} />
+        <Route path="/callback" element={<CallbackPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 
