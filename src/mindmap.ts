@@ -55,28 +55,36 @@ export const createMindmap = async (contents: DSVRowArray<string>) => {
   }
 };
 
-// Miro SDKの初期化（useEffect内で処理）
+/**
+ * Initialize Miro SDK
+ */
 export const useInitializeMiro = () => {
   useEffect(() => {
-    const initMiro = async () => {
+    const initMiro = () => {
       if (window.miro) {
-        // イベントリスナーを設定
-        window.miro.on('READY', async () => {
+        console.log("miroオブジェクトが存在します:", window.miro);
+
+        // SDKの準備が完了したイベントをリッスン
+        window.miro.on("ready", async () => { // イベント名を "ready" に変更
+          console.log("Miro SDKの 'ready' イベントがトリガーされました");
           try {
             const authorized = await window.miro.isAuthorized();
+            console.log("ユーザーの認証ステータス:", authorized);
             if (!authorized) {
               await window.miro.requestAuthorization();
+              console.log("ユーザー認証を要求しました");
             }
-            console.log('Miro SDKが初期化されました');
+            console.log("Miro SDKが初期化されました");
           } catch (error) {
-            console.error('Miro SDK initialization failed:', error);
+            console.error("Miro SDK initialization failed:", error);
           }
         });
 
-        // SDKの準備が整ったことを通知
+        // SDKの初期化をトリガー
         window.miro.board.requestToken();
+        console.log("Miro SDKの初期化をトリガーしました");
       } else {
-        console.error('Miro SDKが利用できません');
+        console.error("Miro SDKが利用できません");
       }
     };
 
